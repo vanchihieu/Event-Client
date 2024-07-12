@@ -37,7 +37,7 @@ const OnboardingScreen = ({navigation}: any) => {
           }}
         />
         <Image
-          source={require('../../assets/images/onboarding-2.png')}
+          source={require('../../assets/images/onboarding-3.png')}
           style={{
             flex: 1,
             width: appInfo.sizes.WIDTH,
