@@ -9,11 +9,11 @@
 // import SectionComponent from './SectionComponent';
 import SpaceComponent from './SpaceComponent';
 // import TagBarComponent from './TagBarComponent';
-// import TextComponent from './TextComponent';
+import TextComponent from './TextComponent';
 
 export {
   SpaceComponent,
-  // TextComponent,
+  TextComponent,
   // ButtonComponent,
   // InputComponent,
   // SectionComponent,
