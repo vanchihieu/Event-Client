@@ -6,7 +6,7 @@ import ContainerComponent from './ContainerComponent';
 // import EventItem from './EventItem';
 import InputComponent from './InputComponent';
 import RowComponent from './RowComponent';
-// import SectionComponent from './SectionComponent';
+import SectionComponent from './SectionComponent';
 import SpaceComponent from './SpaceComponent';
 // import TagBarComponent from './TagBarComponent';
 import TextComponent from './TextComponent';
@@ -16,7 +16,7 @@ export {
   TextComponent,
   ButtonComponent,
   InputComponent,
-  // SectionComponent,
+  SectionComponent,
   ContainerComponent,
   RowComponent,
   // CircleComponent,

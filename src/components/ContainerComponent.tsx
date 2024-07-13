@@ -1,6 +1,5 @@
 import {
   View,
-  Text,
   ImageBackground,
   ScrollView,
   SafeAreaView,
@@ -9,7 +8,7 @@ import {
 import React, {ReactNode} from 'react';
 import {globalStyles} from '../styles/globalStyles';
 import {useNavigation} from '@react-navigation/native';
-import {ButtonComponent, RowComponent, TextComponent} from '.';
+import {RowComponent, TextComponent} from '.';
 import {ArrowLeft} from 'iconsax-react-native';
 import {appColors} from '../constants/appColors';
 import {fontFamilies} from '../constants/fontFamilies';
@@ -26,6 +25,14 @@ const ContainerComponent = (props: Props) => {
   const {children, isScroll, isImageBackground, title, back} = props;
 
   const navigation: any = useNavigation();
+
+  const returnContainer = isScroll ? (
+    <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
+      {children}
+    </ScrollView>
+  ) : (
+    <View style={{flex: 1}}>{children}</View>
+  );
 
   const headerComponent = () => {
     return (
@@ -62,14 +69,6 @@ const ContainerComponent = (props: Props) => {
       </View>
     );
   };
-
-  const returnContainer = isScroll ? (
-    <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
-      {children}
-    </ScrollView>
-  ) : (
-    <View style={{flex: 1}}>{children}</View>
-  );
 
   return isImageBackground ? (
     <ImageBackground

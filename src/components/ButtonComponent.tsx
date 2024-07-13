@@ -1,6 +1,5 @@
 import {
   View,
-  Text,
   StyleProp,
   ViewStyle,
   TextStyle,
