@@ -1,6 +1,6 @@
 import {Lock, Sms, User} from 'iconsax-react-native';
 import React, {useEffect, useState} from 'react';
-// import {useDispatch} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {
   ButtonComponent,
   ContainerComponent,
@@ -15,6 +15,8 @@ import {LoadingModal} from '../../modals';
 import {Validate} from '../../utils/validate';
 import SocialLogin from './components/SocialLogin';
 import authenticationAPI from '../../apis/authApi';
+import {addAuth} from '../../redux/reducers/authReducer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface ErrorMessages {
   email: string;
@@ -35,7 +37,7 @@ const SignUpScreen = ({navigation}: any) => {
   const [errorMessage, setErrorMessage] = useState<any>();
   const [isDisable, setIsDisable] = useState(true);
 
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (
@@ -100,7 +102,7 @@ const SignUpScreen = ({navigation}: any) => {
   };
 
   const handleRegister = async () => {
-    const api = '/verification';
+    const api = '/register';
     setIsLoading(true);
     try {
       const res = await authenticationAPI.HandleAuthentication(
@@ -108,13 +110,16 @@ const SignUpScreen = ({navigation}: any) => {
         {email: values.email},
         'post',
       );
+      console.log('🚀 ~ handleRegister ~ res:', res);
 
       setIsLoading(false);
 
-      navigation.navigate('Verification', {
-        code: res.data.code,
-        ...values,
-      });
+      // navigation.navigate('Verification', {
+      //   code: res.data.code,
+      //   ...values,
+      // });
+      dispatch(addAuth(res.data));
+      await AsyncStorage.setItem('auth', JSON.stringify(res.data));
     } catch (error) {
       console.log(error);
       setIsLoading(false);

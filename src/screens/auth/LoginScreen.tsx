@@ -62,12 +62,6 @@ const LoginScreen = ({navigation}: any) => {
   //   }
   // };
 
-  const handleLogin = async () => {
-    const api = 'http://localhost:3001/hello';
-
-    
-  };
-
   return (
     <ContainerComponent isImageBackground isScroll>
       <SectionComponent
@@ -125,7 +119,7 @@ const LoginScreen = ({navigation}: any) => {
       <SectionComponent>
         <ButtonComponent
           disable={isDisable}
-          onPress={handleLogin}
+          // onPress={handleLogin}
           text="SIGN IN"
           type="primary"
         />
