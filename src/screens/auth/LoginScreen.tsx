@@ -1,7 +1,6 @@
 import {Lock, Sms} from 'iconsax-react-native';
 import React, {useEffect, useState} from 'react';
 import {Alert, Image, Switch} from 'react-native';
-// import authenticationAPI from '../../apis/authApi';
 import {
   ButtonComponent,
   ContainerComponent,
@@ -12,13 +11,12 @@ import {
   TextComponent,
 } from '../../components';
 import {appColors} from '../../constants/appColors';
-// import {Validate} from '../../utils/validate';
-// import SocialLogin from './components/SocialLogin';
-// import {useDispatch} from 'react-redux';
-// import {addAuth} from '../../redux/reducers/authReducer';
+import {useDispatch} from 'react-redux';
+import {addAuth} from '../../redux/reducers/authReducer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SocialLogin from './components/SocialLogin';
 import {Validate} from '../../utils/validate';
+import authenticationAPI from '../../apis/authApi';
 
 const LoginScreen = ({navigation}: any) => {
   const [email, setEmail] = useState('');
@@ -26,7 +24,7 @@ const LoginScreen = ({navigation}: any) => {
   const [isRemember, setIsRemember] = useState(true);
   const [isDisable, setIsDisable] = useState(true);
 
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const emailValidation = Validate.email(email);
@@ -38,29 +36,29 @@ const LoginScreen = ({navigation}: any) => {
     }
   }, [email, password]);
 
-  // const handleLogin = async () => {
-  //   const emailValidation = Validate.email(email);
-  //   if (emailValidation) {
-  //     try {
-  //       const res = await authenticationAPI.HandleAuthentication(
-  //         '/login',
-  //         {email, password},
-  //         'post',
-  //       );
+  const handleLogin = async () => {
+    const emailValidation = Validate.email(email);
+    if (emailValidation) {
+      try {
+        const res = await authenticationAPI.HandleAuthentication(
+          '/login',
+          {email, password},
+          'post',
+        );
 
-  //       dispatch(addAuth(res.data));
+        dispatch(addAuth(res.data));
 
-  //       await AsyncStorage.setItem(
-  //         'auth',
-  //         isRemember ? JSON.stringify(res.data) : email,
-  //       );
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   } else {
-  //     Alert.alert('Email is not correct!!!!');
-  //   }
-  // };
+        await AsyncStorage.setItem(
+          'auth',
+          isRemember ? JSON.stringify(res.data) : email,
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      Alert.alert('Email is not correct!!!!');
+    }
+  };
 
   return (
     <ContainerComponent isImageBackground isScroll>
@@ -119,7 +117,7 @@ const LoginScreen = ({navigation}: any) => {
       <SectionComponent>
         <ButtonComponent
           disable={isDisable}
-          // onPress={handleLogin}
+          onPress={handleLogin}
           text="SIGN IN"
           type="primary"
         />

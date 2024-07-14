@@ -34,34 +34,20 @@ const initValue = {
 const SignUpScreen = ({navigation}: any) => {
   const [values, setValues] = useState(initValue);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<any>();
+  const [errorMessage, setErrorMessage] = useState<any>({});
   const [isDisable, setIsDisable] = useState(true);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (
-      !errorMessage ||
-      (errorMessage &&
-        (errorMessage.email ||
-          errorMessage.password ||
-          errorMessage.confirmPassword)) ||
-      !values.email ||
-      !values.password ||
-      !values.confirmPassword
-    ) {
-      setIsDisable(true);
-    } else {
-      setIsDisable(false);
-    }
+    const hasError = Object.values(errorMessage).some(Boolean);
+    const hasEmptyValues =
+      !values.email || !values.password || !values.confirmPassword;
+    setIsDisable(hasError || hasEmptyValues);
   }, [errorMessage, values]);
 
   const handleChangeValue = (key: string, value: string) => {
-    const data: any = {...values};
-
-    data[`${key}`] = value;
-
-    setValues(data);
+    setValues(prevValues => ({...prevValues, [key]: value}));
   };
 
   const formValidator = (key: string) => {
@@ -70,14 +56,11 @@ const SignUpScreen = ({navigation}: any) => {
 
     switch (key) {
       case 'email':
-        if (!values.email) {
-          message = 'Email is required!!!';
-        } else if (!Validate.email(values.email)) {
-          message = 'Email is not invalid!!';
-        } else {
-          message = '';
-        }
-
+        message = !values.email
+          ? 'Email is required!!!'
+          : !Validate.email(values.email)
+          ? 'Email is not invalid!!'
+          : '';
         break;
 
       case 'password':
@@ -85,14 +68,11 @@ const SignUpScreen = ({navigation}: any) => {
         break;
 
       case 'confirmPassword':
-        if (!values.confirmPassword) {
-          message = 'Please type confirm password!!';
-        } else if (values.confirmPassword !== values.password) {
-          message = 'Password is not match!!!';
-        } else {
-          message = '';
-        }
-
+        message = !values.confirmPassword
+          ? 'Please type confirm password!!'
+          : values.confirmPassword !== values.password
+          ? 'Password is not match!!!'
+          : '';
         break;
     }
 
@@ -102,7 +82,7 @@ const SignUpScreen = ({navigation}: any) => {
   };
 
   const handleRegister = async () => {
-    const api = '/register';
+    const api = '/verification';
     setIsLoading(true);
     try {
       const res = await authenticationAPI.HandleAuthentication(
@@ -110,16 +90,13 @@ const SignUpScreen = ({navigation}: any) => {
         {email: values.email},
         'post',
       );
-      console.log('🚀 ~ handleRegister ~ res:', res);
 
       setIsLoading(false);
 
-      // navigation.navigate('Verification', {
-      //   code: res.data.code,
-      //   ...values,
-      // });
-      dispatch(addAuth(res.data));
-      await AsyncStorage.setItem('auth', JSON.stringify(res.data));
+      navigation.navigate('Verification', {
+        code: res.data.code,
+        ...values,
+      });
     } catch (error) {
       console.log(error);
       setIsLoading(false);
