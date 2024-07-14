@@ -14,7 +14,7 @@ import {appColors} from '../../constants/appColors';
 import {LoadingModal} from '../../modals';
 import {Validate} from '../../utils/validate';
 import SocialLogin from './components/SocialLogin';
-// import authenticationAPI from '../../apis/authApi';
+import authenticationAPI from '../../apis/authApi';
 
 interface ErrorMessages {
   email: string;
@@ -99,27 +99,27 @@ const SignUpScreen = ({navigation}: any) => {
     setErrorMessage(data);
   };
 
-  // const handleRegister = async () => {
-  //   const api = '/verification';
-  //   setIsLoading(true);
-  //   try {
-  //     const res = await authenticationAPI.HandleAuthentication(
-  //       api,
-  //       {email: values.email},
-  //       'post',
-  //     );
+  const handleRegister = async () => {
+    const api = '/verification';
+    setIsLoading(true);
+    try {
+      const res = await authenticationAPI.HandleAuthentication(
+        api,
+        {email: values.email},
+        'post',
+      );
 
-  //     setIsLoading(false);
+      setIsLoading(false);
 
-  //     navigation.navigate('Verification', {
-  //       code: res.data.code,
-  //       ...values,
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //     setIsLoading(false);
-  //   }
-  // };
+      navigation.navigate('Verification', {
+        code: res.data.code,
+        ...values,
+      });
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
@@ -179,7 +179,7 @@ const SignUpScreen = ({navigation}: any) => {
         <SpaceComponent height={16} />
         <SectionComponent>
           <ButtonComponent
-            // onPress={handleRegister}
+            onPress={handleRegister}
             text="SIGN UP"
             disable={isDisable}
             type="primary"

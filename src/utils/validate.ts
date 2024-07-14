@@ -10,3 +10,4 @@ export class Validate {
     return val.length >= 6;
   };
 }
+
