@@ -14,7 +14,6 @@ const AppRouters = () => {
   const {getItem} = useAsyncStorage('auth');
 
   const auth = useSelector(authSelector);
-  console.log('🚀 ~ AppRouters ~ auth:', auth);
 
   const dispatch = useDispatch();
 
