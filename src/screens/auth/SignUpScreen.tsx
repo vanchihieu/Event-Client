@@ -17,6 +17,7 @@ import SocialLogin from './components/SocialLogin';
 import authenticationAPI from '../../apis/authApi';
 import {addAuth} from '../../redux/reducers/authReducer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Alert} from 'react-native';
 
 interface ErrorMessages {
   email: string;
@@ -90,6 +91,7 @@ const SignUpScreen = ({navigation}: any) => {
         {email: values.email},
         'post',
       );
+      console.log('🚀 ~ handleRegister ~ res:', res);
 
       setIsLoading(false);
 
@@ -100,6 +102,7 @@ const SignUpScreen = ({navigation}: any) => {
     } catch (error) {
       console.log(error);
       setIsLoading(false);
+      //   Alert.alert('Email is already exist!!!');
     }
   };
 

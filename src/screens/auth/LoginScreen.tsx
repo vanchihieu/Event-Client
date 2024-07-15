@@ -53,6 +53,7 @@ const LoginScreen = ({navigation}: any) => {
           isRemember ? JSON.stringify(res.data) : email,
         );
       } catch (error) {
+        Alert.alert('Email or password is not correct!!!');
         console.log(error);
       }
     } else {
