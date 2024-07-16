@@ -11,7 +11,6 @@ import {CircleComponent, TextComponent} from '../components';
 import {Platform} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {globalStyles} from '../styles/globalStyles';
-// import DrawerNavigator from './DrawerNavigator';
 
 const TabNavigator = () => {
   const Tab = createBottomTabNavigator();
