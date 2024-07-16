@@ -16,13 +16,13 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {
-  // CategoriesList,
+  CategoriesList,
   CircleComponent,
-  // EventItem,
+  EventItem,
   RowComponent,
   SectionComponent,
   SpaceComponent,
-  // TagBarComponent,
+  TagBarComponent,
   TextComponent,
 } from '../../components';
 import {appColors} from '../../constants/appColors';
@@ -31,10 +31,6 @@ import {authSelector} from '../../redux/reducers/authReducer';
 import {globalStyles} from '../../styles/globalStyles';
 
 const HomeScreen = ({navigation}: any) => {
-  const dispatch = useDispatch();
-
-  const auth = useSelector(authSelector);
-
   return (
     <View style={[globalStyles.container]}>
       <StatusBar barStyle={'light-content'} />
@@ -119,6 +115,7 @@ const HomeScreen = ({navigation}: any) => {
               />
               <TextComponent text="Search..." color={`#A29EF0`} flex={1} />
             </RowComponent>
+
             <RowComponent
               onPress={() =>
                 navigation.navigate('SearchEvents', {
@@ -140,10 +137,12 @@ const HomeScreen = ({navigation}: any) => {
           </RowComponent>
           <SpaceComponent height={24} />
         </View>
-        {/* <View style={{marginBottom: -14}}>
+
+        <View style={{marginBottom: -14}}>
           <CategoriesList isColor />
-        </View> */}
+        </View>
       </View>
+
       <ScrollView
         style={[
           {
@@ -151,13 +150,13 @@ const HomeScreen = ({navigation}: any) => {
             paddingTop: 40,
           },
         ]}>
-        {/* <TagBarComponent title="Upcoming Events" onPress={() => {}} /> */}
-        {/* <FlatList
+        <TagBarComponent title="Upcoming Events" onPress={() => {}} />
+        <FlatList
           horizontal
           showsHorizontalScrollIndicator={false}
           data={Array.from({length: 5})}
           renderItem={({item}) => <EventItem type="card" item={item} />}
-        /> */}
+        />
       </ScrollView>
     </View>
   );

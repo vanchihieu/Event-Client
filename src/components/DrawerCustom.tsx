@@ -1,6 +1,5 @@
 import {
   View,
-  Text,
   StyleSheet,
   Platform,
   StatusBar,
@@ -9,7 +8,7 @@ import {
   FlatList,
 } from 'react-native';
 import React from 'react';
-import {ButtonComponent, RowComponent, SpaceComponent, TextComponent} from '.';
+import {RowComponent, SpaceComponent, TextComponent} from '.';
 import {globalStyles} from '../styles/globalStyles';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
