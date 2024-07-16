@@ -64,7 +64,6 @@ const SocialLogin = () => {
         console.log('Login cancel');
       } else {
         const profile = await Profile.getCurrentProfile();
-        console.log('🚀 ~ handleLoginWithFacebook ~ profile:', profile);
 
         if (profile) {
           setIsLoading(true);
@@ -81,7 +80,6 @@ const SocialLogin = () => {
             data,
             'post',
           );
-          console.log('🚀 ~ handleLoginWithFacebook ~ res:', res);
 
           dispatch(addAuth(res.data));
 

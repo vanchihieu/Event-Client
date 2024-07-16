@@ -1,7 +1,7 @@
 import ButtonComponent from './ButtonComponent';
 // import CardComponent from './CardComponent';
 // import CategoriesList from './CategoriesList';
-// import CircleComponent from './CircleComponent';
+import CircleComponent from './CircleComponent';
 import ContainerComponent from './ContainerComponent';
 // import EventItem from './EventItem';
 import InputComponent from './InputComponent';
@@ -19,7 +19,7 @@ export {
   SectionComponent,
   ContainerComponent,
   RowComponent,
-  // CircleComponent,
+  CircleComponent,
   // CategoriesList,
   // TagBarComponent,
   // CardComponent,
