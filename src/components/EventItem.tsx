@@ -24,7 +24,7 @@ interface Props {
 const EventItem = (props: Props) => {
   const {item, type} = props;
 
-  const navigation: any = useNavigation();
+  const navigation: any = useNavigation(); // trong component thì dùng useNavigation, còn trong screen thì dùng navigation.navigate và tham số route
 
   return (
     <CardComponent
