@@ -1,4 +1,4 @@
-// import GeoLocation from '@react-native-community/geolocation';
+import GeoLocation from '@react-native-community/geolocation';
 import axios from 'axios';
 import {
   HambergerMenu,
@@ -37,7 +37,8 @@ const HomeScreen = ({navigation}: any) => {
   const [addressInfo, setAddressInfo] = useState<AddressModel>();
 
   useEffect(() => {
-    // handleGetCurrentLocation();
+    handleGetCurrentLocation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const itemEvent = {
@@ -56,16 +57,18 @@ const HomeScreen = ({navigation}: any) => {
     date: Date.now(),
   };
 
-  // const handleGetCurrentLocation = async () => {
-  //   GeoLocation.getCurrentPosition(position => {
-  //     if (position && position.coords) {
-  //       handleResertGeocode({
-  //         lat: position.coords.latitude,
-  //         long: position.coords.longitude,
-  //       });
-  //     }
-  //   });
-  // };
+  const handleGetCurrentLocation = async () => {
+    GeoLocation.getCurrentPosition(position => {
+      console.log(position.coords);
+
+      if (position && position.coords) {
+        handleResertGeocode({
+          lat: position.coords.latitude,
+          long: position.coords.longitude,
+        });
+      }
+    });
+  };
 
   const handleResertGeocode = async ({
     lat,
@@ -74,7 +77,7 @@ const HomeScreen = ({navigation}: any) => {
     lat: number;
     long: number;
   }) => {
-    const api = `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat},${long}&lang=en-US&apiKey=EoGZAqvCk9NFBvK6Trb_9iudji1DWPy1QfnsJN0GRlo`;
+    const api = `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat},${long}&lang=en-US&apiKey=dfa9-_yTyT7Uxds67x5HrVY7pL2RCNxr6KSnyH9mv4E`;
     await axios
       .get(api)
       .then(res => {
@@ -84,10 +87,12 @@ const HomeScreen = ({navigation}: any) => {
           items.length > 0 && setAddressInfo(items[0]);
         }
       })
+
       .catch(e => {
         console.log('Error in getAddressFromCoordinates', e);
       });
   };
+  console.log('addressInfo', addressInfo);
 
   return (
     <View style={[globalStyles.container]}>
