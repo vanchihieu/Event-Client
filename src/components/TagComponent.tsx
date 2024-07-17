@@ -1,18 +1,44 @@
-import {View, Text} from 'react-native';
 import React, {ReactNode} from 'react';
-import {RowComponent} from '.';
+import {StyleProp, TouchableOpacity, ViewStyle} from 'react-native';
+import {TextComponent} from '.';
+import {globalStyles} from '../styles/globalStyles';
+import {appColors} from '../constants/appColors';
+import {fontFamilies} from '../constants/fontFamilies';
 
 interface Props {
+  onPress: () => void;
+  label: string;
   icon?: ReactNode;
-  title: string;
-  isFill?: boolean;
-  color?: string;
+  textColor?: string;
+  bgColor?: string;
+  styles?: StyleProp<ViewStyle>;
 }
 
 const TagComponent = (props: Props) => {
-  const {icon, color, isFill, title} = props;
+  const {onPress, label, icon, textColor, bgColor, styles} = props;
 
-  return <RowComponent>{icon && icon}</RowComponent>;
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      style={[
+        globalStyles.row,
+        globalStyles.tag,
+        {
+          backgroundColor: bgColor ? bgColor : appColors.white,
+        },
+        styles,
+      ]}>
+      {icon && icon}
+      <TextComponent
+        font={fontFamilies.medium}
+        text={label}
+        styles={{marginLeft: icon ? 8 : 0}}
+        color={
+          textColor ? textColor : bgColor ? appColors.white : appColors.gray
+        }
+      />
+    </TouchableOpacity>
+  );
 };
 
 export default TagComponent;

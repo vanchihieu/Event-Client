@@ -1,5 +1,6 @@
 import Facebook from './Facebook.svg';
 import Google from './Google.svg';
-import ChefFork from './ChefFork.svg'; // Make sure the file './ChefFork.svg' exists in the specified location.
+import KnifeFork from './KnifeFork.svg';
+import ChefFork from './ChefFork.svg';
 
-export {Facebook, Google, ChefFork};
+export {Facebook, Google, ChefFork, KnifeFork};
