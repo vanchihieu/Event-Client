@@ -1,14 +1,17 @@
 import {
   View,
+  Text,
   ImageBackground,
   ScrollView,
   SafeAreaView,
   TouchableOpacity,
+  StatusBar,
+  Platform,
 } from 'react-native';
 import React, {ReactNode} from 'react';
 import {globalStyles} from '../styles/globalStyles';
 import {useNavigation} from '@react-navigation/native';
-import {RowComponent, TextComponent} from '.';
+import {ButtonComponent, RowComponent, TextComponent} from '.';
 import {ArrowLeft} from 'iconsax-react-native';
 import {appColors} from '../constants/appColors';
 import {fontFamilies} from '../constants/fontFamilies';
@@ -26,17 +29,9 @@ const ContainerComponent = (props: Props) => {
 
   const navigation: any = useNavigation();
 
-  const returnContainer = isScroll ? (
-    <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
-      {children}
-    </ScrollView>
-  ) : (
-    <View style={{flex: 1}}>{children}</View>
-  );
-
   const headerComponent = () => {
     return (
-      <View style={{flex: 1, paddingTop: 30}}>
+      <View style={{flex: 1}}>
         {(title || back) && (
           <RowComponent
             styles={{
@@ -70,6 +65,14 @@ const ContainerComponent = (props: Props) => {
     );
   };
 
+  const returnContainer = isScroll ? (
+    <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
+      {children}
+    </ScrollView>
+  ) : (
+    <View style={{flex: 1}}>{children}</View>
+  );
+
   return isImageBackground ? (
     <ImageBackground
       source={require('../assets/images/splash-img.png')}
@@ -79,7 +82,14 @@ const ContainerComponent = (props: Props) => {
     </ImageBackground>
   ) : (
     <SafeAreaView style={[globalStyles.container]}>
-      <View>{headerComponent()}</View>
+      <StatusBar barStyle={'dark-content'} />
+      <View
+        style={[
+          globalStyles.container,
+          {paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0},
+        ]}>
+        {headerComponent()}
+      </View>
     </SafeAreaView>
   );
 };

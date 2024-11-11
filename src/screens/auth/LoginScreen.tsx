@@ -1,6 +1,7 @@
-import {Lock, Sms} from 'iconsax-react-native';
+import {Cake, Lock, Sms} from 'iconsax-react-native';
 import React, {useEffect, useState} from 'react';
 import {Alert, Image, Switch} from 'react-native';
+import authenticationAPI from '../../apis/authApi';
 import {
   ButtonComponent,
   ContainerComponent,
@@ -11,18 +12,19 @@ import {
   TextComponent,
 } from '../../components';
 import {appColors} from '../../constants/appColors';
+import {Validate} from '../../utils/validate';
+import SocialLogin from './components/SocialLogin';
 import {useDispatch} from 'react-redux';
 import {addAuth} from '../../redux/reducers/authReducer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import SocialLogin from './components/SocialLogin';
-import {Validate} from '../../utils/validate';
-import authenticationAPI from '../../apis/authApi';
+import {LoadingModal} from '../../modals';
 
 const LoginScreen = ({navigation}: any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isRemember, setIsRemember] = useState(true);
   const [isDisable, setIsDisable] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -39,6 +41,7 @@ const LoginScreen = ({navigation}: any) => {
   const handleLogin = async () => {
     const emailValidation = Validate.email(email);
     if (emailValidation) {
+      setIsLoading(true);
       try {
         const res = await authenticationAPI.HandleAuthentication(
           '/login',
@@ -52,9 +55,10 @@ const LoginScreen = ({navigation}: any) => {
           'auth',
           isRemember ? JSON.stringify(res.data) : email,
         );
+
+        setIsLoading(false);
       } catch (error) {
-        Alert.alert('Email or password is not correct!!!');
-        console.log(error);
+        setIsLoading(false);
       }
     } else {
       Alert.alert('Email is not correct!!!!');
@@ -117,7 +121,7 @@ const LoginScreen = ({navigation}: any) => {
       <SpaceComponent height={16} />
       <SectionComponent>
         <ButtonComponent
-          disable={isDisable}
+          disable={isLoading || isDisable}
           onPress={handleLogin}
           text="SIGN IN"
           type="primary"
@@ -134,6 +138,7 @@ const LoginScreen = ({navigation}: any) => {
           />
         </RowComponent>
       </SectionComponent>
+      <LoadingModal visible={isLoading} />
     </ContainerComponent>
   );
 };

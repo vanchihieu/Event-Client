@@ -1,5 +1,3 @@
-import GeoLocation from '@react-native-community/geolocation';
-import axios from 'axios';
 import {
   HambergerMenu,
   Notification,
@@ -17,6 +15,7 @@ import {
   View,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   CategoriesList,
   CircleComponent,
@@ -30,16 +29,49 @@ import {
 } from '../../components';
 import {appColors} from '../../constants/appColors';
 import {fontFamilies} from '../../constants/fontFamilies';
-import {AddressModel} from '../../models/AddressModel';
+import {authSelector} from '../../redux/reducers/authReducer';
 import {globalStyles} from '../../styles/globalStyles';
+import GeoLocation from '@react-native-community/geolocation';
+import axios from 'axios';
+import {AddressModel} from '../../models/AddressModel';
+import Geocoder from 'react-native-geocoding';
+
+Geocoder.init(process.env.MAP_API_KEY4 as string);
 
 const HomeScreen = ({navigation}: any) => {
-  const [addressInfo, setAddressInfo] = useState<AddressModel>();
+  const [currentLocation, setCurrentLocation] = useState<AddressModel>();
+
+  const dispatch = useDispatch();
+
+  const auth = useSelector(authSelector);
 
   useEffect(() => {
-    handleGetCurrentLocation();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    GeoLocation.getCurrentPosition(position => {
+      if (position.coords) {
+        reverseGeoCode({
+          lat: position.coords.latitude,
+          long: position.coords.longitude,
+        });
+      }
+    });
   }, []);
+
+  const reverseGeoCode = async ({lat, long}: {lat: number; long: number}) => {
+    const api = `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat},${long}&lang=vi-VI&apiKey=zCDIlA5ytRuEe3YS9YrJlzAGjTkxsy4S6mJtq7ZpkGU`;
+
+    try {
+      const res = await axios(api);
+
+      if (res && res.status === 200 && res.data) {
+        const items = res.data.items;
+        console.log('🚀 ~ reverseGeoCode ~ items:', items);
+
+        setCurrentLocation(items[0]);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const itemEvent = {
     title: 'International Band Music Concert',
@@ -56,43 +88,6 @@ const HomeScreen = ({navigation}: any) => {
     endAt: Date.now(),
     date: Date.now(),
   };
-
-  const handleGetCurrentLocation = async () => {
-    GeoLocation.getCurrentPosition(position => {
-      console.log(position.coords);
-
-      if (position && position.coords) {
-        handleResertGeocode({
-          lat: position.coords.latitude,
-          long: position.coords.longitude,
-        });
-      }
-    });
-  };
-
-  const handleResertGeocode = async ({
-    lat,
-    long,
-  }: {
-    lat: number;
-    long: number;
-  }) => {
-    const api = `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat},${long}&lang=en-US&apiKey=dfa9-_yTyT7Uxds67x5HrVY7pL2RCNxr6KSnyH9mv4E`;
-    await axios
-      .get(api)
-      .then(res => {
-        if (res && res.status === 200 && res.data) {
-          const items = res.data.items;
-
-          items.length > 0 && setAddressInfo(items[0]);
-        }
-      })
-
-      .catch(e => {
-        console.log('Error in getAddressFromCoordinates', e);
-      });
-  };
-  console.log('addressInfo', addressInfo);
 
   return (
     <View style={[globalStyles.container]}>
@@ -124,9 +119,9 @@ const HomeScreen = ({navigation}: any) => {
                   color={appColors.white}
                 />
               </RowComponent>
-              {addressInfo && (
+              {currentLocation && (
                 <TextComponent
-                  text={`${addressInfo.address.city}, ${addressInfo.address.countryCode}`}
+                  text={`${currentLocation.address.city}, ${currentLocation.address.county}`}
                   flex={0}
                   color={appColors.white}
                   font={fontFamilies.medium}
@@ -154,9 +149,7 @@ const HomeScreen = ({navigation}: any) => {
               </View>
             </CircleComponent>
           </RowComponent>
-
           <SpaceComponent height={20} />
-
           <RowComponent>
             <RowComponent
               styles={{flex: 1}}
@@ -206,7 +199,6 @@ const HomeScreen = ({navigation}: any) => {
           <CategoriesList isFill />
         </View>
       </View>
-
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={[
@@ -226,7 +218,6 @@ const HomeScreen = ({navigation}: any) => {
             )}
           />
         </SectionComponent>
-
         <SectionComponent>
           <ImageBackground
             source={require('../../assets/images/invite-image.png')}
@@ -257,7 +248,6 @@ const HomeScreen = ({navigation}: any) => {
             </RowComponent>
           </ImageBackground>
         </SectionComponent>
-
         <SectionComponent styles={{paddingHorizontal: 0, paddingTop: 24}}>
           <TabBarComponent title="Nearby You" onPress={() => {}} />
           <FlatList
