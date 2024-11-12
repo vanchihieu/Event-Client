@@ -16,6 +16,8 @@ import SpaceComponent from './SpaceComponent';
 import TabBarComponent from './TabBarComponent';
 import TagComponent from './TagComponent';
 import TextComponent from './TextComponent';
+import LoadingComponent from './LoadingComponent';
+import AvatarComponent from './AvatarComponent';
 
 export {
   SpaceComponent,
@@ -36,4 +38,6 @@ export {
   DateTimePicker,
   DropdownPicker,
   ButtonImagePicker,
+  LoadingComponent,
+  AvatarComponent,
 };

@@ -50,7 +50,6 @@ const AddNewScreen = ({navigation}: any) => {
     ...initValues,
     authorId: auth.id,
   });
-  console.log('🚀 ~ AddNewScreen ~ eventData:', eventData);
 
   const [usersSelects, setUsersSelects] = useState<SelectModel[]>([]);
   const [fileSelected, setFileSelected] = useState<any>();
@@ -66,11 +65,15 @@ const AddNewScreen = ({navigation}: any) => {
     setErrorsMess(mess);
   }, [eventData]);
 
-  const handleChangeValue = (key: string, value: string | Date | string[]) => {
-    setEventData((prevEventData: any) => ({
-      ...prevEventData,
-      [key]: value,
-    }));
+  const handleChangeValue = (
+    key: string,
+    value: string | number | string[],
+  ) => {
+    const items = {...eventData};
+
+    items[`${key}`] = value;
+
+    setEventData(items);
   };
 
   const handleGetAllUsers = async () => {
@@ -78,7 +81,6 @@ const AddNewScreen = ({navigation}: any) => {
 
     try {
       const res: any = await userAPI.HandleUser(api);
-      console.log('🚀 ~ handleGetAllUsers ~ res:', res);
 
       if (res && res.data) {
         const items: SelectModel[] = [];
@@ -100,13 +102,18 @@ const AddNewScreen = ({navigation}: any) => {
   };
 
   const handleAddEvent = async () => {
+    console.log('🚀 ~ AddNewScreen ~ eventData:', eventData);
+
     if (fileSelected) {
+      console.log('🚀 ~ handleAddEvent ~ fileSelected:', fileSelected);
+
       const filename = `${fileSelected.filename ?? `image-${Date.now()}`}.${
         fileSelected.path.split('.')[1]
       }`;
       const path = `images/${filename}`;
 
       const res = storage().ref(path).putFile(fileSelected.path);
+      console.log('🚀 ~ handleAddEvent ~ res:', res);
 
       res.on(
         'state_changed',
@@ -136,9 +143,11 @@ const AddNewScreen = ({navigation}: any) => {
     const api = '/add-new';
     try {
       const res = await eventAPI.HandleEvent(api, event, 'post');
+
       navigation.navigate('Explore', {
         screen: 'HomeScreen',
       });
+      console.log('🚀 ~ handlePustEvent ~ res:', res);
     } catch (error) {
       console.log(error);
     }

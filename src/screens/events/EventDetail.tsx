@@ -1,5 +1,5 @@
 import {ArrowLeft, ArrowRight, Calendar, Location} from 'iconsax-react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ImageBackground,
   ScrollView,
@@ -23,9 +23,67 @@ import {appColors} from '../../constants/appColors';
 import {EventModel} from '../../models/EventModel';
 import {globalStyles} from '../../styles/globalStyles';
 import {fontFamilies} from '../../constants/fontFamilies';
+import {authSelector, AuthState} from '../../redux/reducers/authReducer';
+import {useDispatch, useSelector} from 'react-redux';
+import {ProfileModel} from '../../models/ProfileModel';
+import eventAPI from '../../apis/eventApi';
+import userAPI from '../../apis/userApi';
 
 const EventDetail = ({navigation, route}: any) => {
-  const {item}: {item: EventModel} = route.params;
+  const {id}: {id: string} = route.params;
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [followers, setFollowers] = useState<string[]>([]);
+  const [profile, setProfile] = useState<ProfileModel>();
+  const [isVisibleModalinvite, setIsVisibleModalinvite] = useState(false);
+  const [item, setItem] = useState<EventModel>();
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const auth: AuthState = useSelector(authSelector);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (id) {
+      getData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  const getData = async () => {
+    setIsLoading(true);
+    await getEventById();
+    await getProfile(id);
+    // await getFollowersById();
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    if (item) {
+      getProfile(item.authorId);
+    }
+  }, [item]);
+
+  const getProfile = async (id: string) => {
+    const api = `/get-profile?uid=${id}`;
+    try {
+      const res = await userAPI.HandleUser(api);
+      res && res.data && setProfile(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getEventById = async () => {
+    const api = `/get-event?id=${id}`;
+
+    try {
+      const res: any = await eventAPI.HandleEvent(api);
+
+      setItem(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
@@ -94,7 +152,7 @@ const EventDetail = ({navigation, route}: any) => {
                     width: '90%',
                   },
                 ]}>
-                <AvatarGroup size={36} />
+                <AvatarGroup userIds={item?.joined || []} size={36} />
                 <TouchableOpacity
                   style={[
                     globalStyles.button,
@@ -115,7 +173,7 @@ const EventDetail = ({navigation, route}: any) => {
                 title
                 size={32}
                 font={fontFamilies.medium}
-                text={item.title}
+                text={item?.title || ''}
               />
             </SectionComponent>
             <SectionComponent>
@@ -165,12 +223,12 @@ const EventDetail = ({navigation, route}: any) => {
                     justifyContent: 'space-around',
                   }}>
                   <TextComponent
-                    text={item.location.title}
+                    text={item?.locationTitle || ''}
                     font={fontFamilies.medium}
                     size={16}
                   />
                   <TextComponent
-                    text={item.location.address}
+                    text={item?.locationAddress || ''}
                     color={appColors.gray}
                   />
                 </View>
