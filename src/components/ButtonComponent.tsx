@@ -55,6 +55,7 @@ const ButtonComponent = (props: Props) => {
               ? appColors.gray4
               : appColors.primary,
             marginBottom: 17,
+            marginTop: 17,
             width: '90%',
           },
           styles,

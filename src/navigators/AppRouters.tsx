@@ -7,6 +7,7 @@ import {addAuth, authSelector} from '../redux/reducers/authReducer';
 import AuthNavigator from './AuthNavigator';
 import MainNavigator from './MainNavigator';
 import {SplashScreen} from '../screens';
+import {UserHandle} from '../utils/UserHandlers';
 
 const AppRouters = () => {
   const [isShowSplash, setIsShowSplash] = useState(true);
@@ -18,14 +19,23 @@ const AppRouters = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    checkLogin();
-    const timeout = setTimeout(() => {
-      setIsShowSplash(false);
-    }, 1500);
-
-    return () => clearTimeout(timeout);
+    handleGetDatas();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (auth.id) {
+      UserHandle.getFollowersById(auth.id, dispatch);
+      UserHandle.getFollowingByUid(auth.id, dispatch);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auth.id]);
+
+  const handleGetDatas = async () => {
+    await checkLogin();
+
+    setIsShowSplash(false);
+  };
 
   const checkLogin = async () => {
     const res = await getItem();
