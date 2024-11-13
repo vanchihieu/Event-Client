@@ -8,7 +8,7 @@ import {
   FlatList,
 } from 'react-native';
 import React from 'react';
-import {RowComponent, SpaceComponent, TextComponent} from '.';
+import {AvatarComponent, RowComponent, SpaceComponent, TextComponent} from '.';
 import {globalStyles} from '../styles/globalStyles';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
@@ -30,6 +30,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const DrawerCustom = ({navigation}: any) => {
   const user = useSelector(authSelector);
+  const auth = useSelector(authSelector);
+  console.log('🚀 ~ DrawerCustom ~ auth:', auth);
 
   const dispatch = useDispatch();
   const size = 20;
@@ -77,11 +79,33 @@ const DrawerCustom = ({navigation}: any) => {
     },
   ];
 
-  const handleSignOut = async () => {
+  const handleLogout = async () => {
     await GoogleSignin.signOut();
-    await LoginManager.logOut();
+    LoginManager.logOut();
     dispatch(removeAuth({}));
     await AsyncStorage.clear();
+  };
+
+  const handleNavigation = (key: string) => {
+    switch (key) {
+      case 'SignOut':
+        handleLogout();
+        break;
+
+      case 'MyProfile':
+        navigation.navigate('Profile', {
+          screen: 'ProfileScreen',
+          params: {
+            id: auth.id,
+          },
+        });
+        break;
+      default:
+        console.log(key);
+        break;
+    }
+
+    navigation.closeDrawer();
   };
 
   const displayName = user.name || user.email;
@@ -92,7 +116,7 @@ const DrawerCustom = ({navigation}: any) => {
 
   return (
     <View style={[localStyles.container]}>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={() => {
           navigation.closeDrawer();
 
@@ -114,7 +138,12 @@ const DrawerCustom = ({navigation}: any) => {
           </View>
         )}
         <TextComponent text={displayText} title size={18} />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+      <AvatarComponent
+        onPress={() => handleNavigation('MyProfile')}
+        photoURL={auth.photo}
+        name={auth.name ? auth.name : auth.email}
+      />
 
       <FlatList
         showsVerticalScrollIndicator={false}
@@ -123,13 +152,7 @@ const DrawerCustom = ({navigation}: any) => {
         renderItem={({item, index}) => (
           <RowComponent
             styles={[localStyles.listItem]}
-            onPress={
-              item.key === 'SignOut'
-                ? () => handleSignOut()
-                : () => {
-                    navigation.closeDrawer();
-                  }
-            }>
+            onPress={() => handleNavigation(item.key)}>
             {item.icon}
             <TextComponent
               text={item.title}
