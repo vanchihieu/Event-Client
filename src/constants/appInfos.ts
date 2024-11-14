@@ -6,6 +6,7 @@ export const appInfo = {
     HEIGHT: Dimensions.get('window').height,
   },
   BASE_URL: 'http://172.27.241.100:3001',
+  domain: 'https://eventapp.com',
   monthNames: [
     'January',
     'February',

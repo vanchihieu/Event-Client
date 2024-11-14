@@ -44,7 +44,7 @@ import {UserHandle} from '../../utils/UserHandlers';
 import userAPI from '../../apis/userApi';
 import {ProfileModel} from '../../models/ProfileModel';
 import ModalInvite from '../../modals/ModalInvite';
-// import {ShareEvent} from '../../utils/shareEvent';
+import {ShareEvent} from '../../utils/shareEvent';
 
 const EventDetail = ({navigation, route}: any) => {
   const {id}: {id: string} = route.params;
@@ -228,13 +228,13 @@ const EventDetail = ({navigation, route}: any) => {
                 color={appColors.white}
               />
               <ButtonComponent
-                // onPress={() =>
-                //   ShareEvent({
-                //     title: item.title,
-                //     description: item.description,
-                //     id,
-                //   })
-                // }
+                onPress={() =>
+                  ShareEvent({
+                    title: item.title,
+                    description: item.description,
+                    id,
+                  })
+                }
                 icon={<Share size={22} color="white" />}
               />
               <SpaceComponent width={12} />
