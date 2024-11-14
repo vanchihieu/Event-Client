@@ -248,14 +248,6 @@ const HomeScreen = ({navigation}: any) => {
         ]}>
         <SectionComponent styles={{paddingHorizontal: 0, paddingTop: 24}}>
           <TabBarComponent title="Upcoming Events" onPress={() => {}} />
-          {/* <FlatList
-            showsHorizontalScrollIndicator={false}
-            horizontal
-            data={Array.from({length: 5})}
-            renderItem={({item, index}) => (
-              <EventItem key={`event${index}`} item={itemEvent} type="card" />
-            )}
-          /> */}
           {events.length > 0 ? (
             <FlatList
               showsHorizontalScrollIndicator={false}
