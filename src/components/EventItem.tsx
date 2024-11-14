@@ -28,7 +28,6 @@ interface Props {
 
 const EventItem = (props: Props) => {
   const {item, type, styles} = props;
-  console.log('🚀 ~ EventItem ~ item:', item);
 
   const navigation: any = useNavigation(); // trong component thì dùng useNavigation, còn trong screen thì dùng navigation.navigate và tham số route
   const auth: AuthState = useSelector(authSelector);

@@ -23,6 +23,7 @@ import {appColors} from '../constants/appColors';
 import storage from '@react-native-firebase/storage';
 import {EventModel} from '../models/EventModel';
 import eventAPI from '../apis/eventApi';
+import {DateTime} from '../utils/DateTime';
 
 const initValues = {
   title: '',
@@ -40,7 +41,7 @@ const initValues = {
   endAt: Date.now(),
   date: Date.now(),
   price: '',
-  category: '',
+  categories: '',
 };
 
 const AddNewScreen = ({navigation}: any) => {
@@ -54,16 +55,37 @@ const AddNewScreen = ({navigation}: any) => {
   const [usersSelects, setUsersSelects] = useState<SelectModel[]>([]);
   const [fileSelected, setFileSelected] = useState<any>();
   const [errorsMess, setErrorsMess] = useState<string[]>([]);
-
-  useEffect(() => {
-    handleGetAllUsers();
-  }, []);
+  const [categories, setCategories] = useState<SelectModel[]>([]);
 
   useEffect(() => {
     const mess = Validate.EventValidation(eventData);
 
     setErrorsMess(mess);
   }, [eventData]);
+
+  const getCategories = async () => {
+    const api = `/get-categories`;
+
+    try {
+      const res = await eventAPI.HandleEvent(api);
+      if (res.data) {
+        const items: SelectModel[] = [];
+
+        const data = res.data;
+
+        data.forEach((item: any) =>
+          items.push({
+            label: item.title,
+            value: item._id,
+          }),
+        );
+
+        setCategories(items);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleChangeValue = (
     key: string,
@@ -102,18 +124,13 @@ const AddNewScreen = ({navigation}: any) => {
   };
 
   const handleAddEvent = async () => {
-    console.log('🚀 ~ AddNewScreen ~ eventData:', eventData);
-
     if (fileSelected) {
-      console.log('🚀 ~ handleAddEvent ~ fileSelected:', fileSelected);
-
       const filename = `${fileSelected.filename ?? `image-${Date.now()}`}.${
         fileSelected.path.split('.')[1]
       }`;
       const path = `images/${filename}`;
 
       const res = storage().ref(path).putFile(fileSelected.path);
-      console.log('🚀 ~ handleAddEvent ~ res:', res);
 
       res.on(
         'state_changed',
@@ -142,12 +159,14 @@ const AddNewScreen = ({navigation}: any) => {
   const handlePustEvent = async (event: EventModel) => {
     const api = '/add-new';
     try {
+      event.startAt = DateTime.GetEventTime(event.date, event.startAt);
+      event.endAt = DateTime.GetEventTime(event.date, event.endAt);
+
       const res = await eventAPI.HandleEvent(api, event, 'post');
 
       navigation.navigate('Explore', {
         screen: 'HomeScreen',
       });
-      console.log('🚀 ~ handlePustEvent ~ res:', res);
     } catch (error) {
       console.log(error);
     }
@@ -165,6 +184,11 @@ const AddNewScreen = ({navigation}: any) => {
 
     setEventData(items);
   };
+
+  useEffect(() => {
+    handleGetAllUsers();
+    getCategories();
+  }, []);
 
   return (
     <ContainerComponent isScroll>
@@ -206,26 +230,9 @@ const AddNewScreen = ({navigation}: any) => {
         />
 
         <DropdownPicker
-          selected={eventData.category}
-          values={[
-            {
-              label: 'Sport',
-              value: 'sport',
-            },
-            {
-              label: 'Food',
-              value: 'food',
-            },
-            {
-              label: 'Art',
-              value: 'art',
-            },
-            {
-              label: 'Music',
-              value: 'music',
-            },
-          ]}
-          onSelect={val => handleChangeValue('category', val)}
+          selected={eventData.categories}
+          values={categories}
+          onSelect={val => handleChangeValue('categories', val)}
         />
 
         <RowComponent>

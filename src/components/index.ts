@@ -18,6 +18,7 @@ import TagComponent from './TagComponent';
 import TextComponent from './TextComponent';
 import LoadingComponent from './LoadingComponent';
 import AvatarComponent from './AvatarComponent';
+import UserComponent from './UserComponent';
 
 export {
   SpaceComponent,
@@ -40,4 +41,5 @@ export {
   ButtonImagePicker,
   LoadingComponent,
   AvatarComponent,
+  UserComponent,
 };
